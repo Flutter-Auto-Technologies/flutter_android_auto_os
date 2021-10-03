@@ -21,6 +21,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    FlutterAndroidAutoOs.currentCarGear.listen((event) {
+      print(event);
+    });
     initPlatformState();
   }
 
@@ -54,7 +57,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text('Running on: $_platformVersion\n',style: const TextStyle(fontSize: 30),),
         ),
       ),
     );
