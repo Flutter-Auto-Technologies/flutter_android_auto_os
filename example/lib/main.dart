@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -16,11 +17,33 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: HomePage());
+  }
+}
 
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String _platformVersion = 'Unknown';
+  String speed="0.0";
   @override
   void initState() {
     super.initState();
+    FlutterAndroidAutoOs.currentCarGear.listen((event) {
+      setState(() {
+        speed=event.toString();
+      });
+      if (kDebugMode) {
+        print("data:" + event.toString());
+      }
+    });
     initPlatformState();
   }
 
@@ -30,8 +53,8 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await FlutterAndroidAutoOs.platformVersion ?? 'Unknown platform version';
+      platformVersion = await FlutterAndroidAutoOs.platformVersion ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -47,15 +70,29 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Android automotive os'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Flutter version:" + _platformVersion,
+            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "Car speed:" + speed.toString(),
+            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }
